@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!--mybatis主配置文件-->
+<configuration>
+    <!--    settings是mybatis全局控制-->
+    <settings>
+        <!--    配置日志文件-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+
+  <typeAliases>
+      <package name="com.zxj.domain"/>
+  </typeAliases>
+
+
+    <!--    指定配置文件位置，映射配置文件指的是每个dao独立的配置文件-->
+<mappers>
+    <package name="com.zxj.mapper"/>
+</mappers>
+
+</configuration>
