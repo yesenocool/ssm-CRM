@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("clueService")
 public class ClueServiceImpl implements ClueService {
@@ -64,14 +66,26 @@ public class ClueServiceImpl implements ClueService {
     private TranHistoryDao tranHistoryDao;
 
 
+    @Override
+    public Clue queryById(String id) {
+        return clueDao.queryById(id);
+    }
 
+    @Override
+    public int updateClue(Clue clue) {
+        return clueDao.updateClue(clue);
+    }
 
-
-
-
-
-
-
+    //查询全部线索
+    @Override
+    public  Map<String,Object>  getAllList(Map map) {
+        Integer total = clueDao.getTotalByCondition(map);
+        List<Clue> cList = clueDao.getAllList(map);
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("total",total);
+        map1.put("cList",cList);
+        return map1;
+    }
 
     //添加线索
     @Override

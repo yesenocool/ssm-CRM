@@ -2,7 +2,6 @@ package com.zxj.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.deploy.net.HttpResponse;
 import com.zxj.domain.*;
 import com.zxj.service.ActivityService;
 import com.zxj.service.ClueActivityRelationService;
@@ -12,7 +11,6 @@ import com.zxj.utils.DateTimeUtil;
 import com.zxj.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +43,69 @@ public class ClueController {
     @Autowired
     @Qualifier("clueActivityRelationServiceImpl")
     private ClueActivityRelationService clueActivityRelationServiceImpl;
+
+
+    //保存修改结果
+    @RequestMapping("/updateClue")
+    @ResponseBody
+    public boolean updateClue(HttpSession session,Clue clue){
+        boolean flag = true;
+        String editBy = ((User)session.getAttribute("user")).getName();
+        String editTime = DateTimeUtil.getSysTime();
+        clue.setEditBy(editBy);
+        clue.setEditTime(editTime);
+        int count = clueService.updateClue(clue);
+        if(count != 1){
+            flag = false;
+        }
+        return flag;
+    }
+
+
+    //修改线索
+    @RequestMapping("/getClueById")
+    @ResponseBody
+    public Map<String,Object> getClueById(String  id){
+
+       //查询所有拥有者
+        List<User> uList = userService.getAllUsers();
+        //通过id来查线索
+        Clue clue = clueService.queryById(id);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("uList",uList);
+        map.put("clue",clue);
+        return map;
+
+    }
+
+    @RequestMapping("/clueSearch")
+    @ResponseBody
+    public Map<String,Object> clueSearch(Clue clue,int pageNo,int pageSize){
+        String fullname = clue.getFullname();
+        String company = clue.getCompany();
+        String phone = clue.getPhone();
+        String source = clue.getSource();
+        String owner = clue.getOwner();
+        String mphone = clue.getMphone();
+        String state = clue.getState();
+
+        int skipCount = (pageNo-1) * pageSize;
+        Map<String,Object> map = new HashMap<>();
+        map.put("skipCount",skipCount);
+        map.put("pageSize",pageSize);
+        map.put("fullname",fullname);
+        map.put("company",company);
+        map.put("phone",phone);
+        map.put("source",source);
+        map.put("owner",owner);
+        map.put("mphone",mphone);
+        map.put("state",state);
+
+       Map<String,Object> clues =  clueService.getAllList(map);
+
+        return clues;
+    }
 
     @RequestMapping("/getUserList")
     @ResponseBody

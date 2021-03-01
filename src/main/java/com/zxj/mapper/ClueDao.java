@@ -3,7 +3,11 @@ package com.zxj.mapper;
 
 import com.zxj.domain.Clue;
 
+import java.util.List;
+import java.util.Map;
+
 public interface ClueDao {
+    int  updateClue(Clue clue);
 
     //添加线索
     int save(Clue clue);
@@ -17,4 +21,8 @@ public interface ClueDao {
     Clue getById(String clueId);
 
     int delete(String clueId);
+
+    List<Clue> getAllList(Map map);
+
+    Integer getTotalByCondition(Map map);
 }
